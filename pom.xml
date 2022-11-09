@@ -87,7 +87,7 @@
 				<version>3.3.1</version>
 				<configuration>
 					<to>
-						<image>app</image>
+						<image>bug-tracker</image>
 					</to>
 				</configuration>
 			</plugin>

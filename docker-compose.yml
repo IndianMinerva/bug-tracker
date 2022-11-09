@@ -3,19 +3,19 @@ networks:
   app-tier:
     driver: bridge
 services:
-  postgres:
-    image: postgres
+  mongodb:
+    image: 'mongo:latest'
     restart: always
     environment:
-      POSTGRES_PASSWORD: example
+      - ALLOW_EMPTY_PASSWORD=yes
     ports:
-      - '5432:5432'
+      - '27017:27017'
     volumes:
-      - /var/lib/postgres/data
+      - /var/lib/mongodb/data
     networks:
       - app-tier
   my-app:
-    image: 'app:latest'
+    image: 'bug-tracker:latest'
     ports:
       - '8080:8080'
     environment:
@@ -23,7 +23,7 @@ services:
     networks:
       - app-tier
     depends_on:
-      - postgres
+      - mongodb
 volumes:
-  postgres:
+  mongodb:
     driver: local
