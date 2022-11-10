@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/bug")
+@RequestMapping("/bugs")
 @AllArgsConstructor
 public class BugTrackingController {
     private BugService bugService;
@@ -20,9 +20,14 @@ public class BugTrackingController {
         return bugService.getAll();
     }
 
+    @GetMapping("/{id}")
+    public BugDto getById(String id) {
+        return bugService.getById(id); //TODO handle the error and return a status
+    }
+
     @PostMapping
     public void createBug(@RequestBody BugCreationRequest bugCreationRequest) {
-        bugService.createBug(bugCreationRequest);
+        bugService.createBug(bugCreationRequest); //TODO handle the error and return a status
     }
 
     @GetMapping("/status/{status}")
@@ -39,4 +44,15 @@ public class BugTrackingController {
     public List<BugDto> getByAssignedUser(@PathVariable String assignedUser) {
         return bugService.getByAssignedUser(assignedUser);
     }
+
+    @PutMapping("status/{id}/{status}")
+    public BugDto updateStatus(@PathVariable String id, @PathVariable BugStatus status) {
+        return bugService.updateStatus(id, status); //TODO handle the error and return a status
+    }
+
+    @PutMapping("assign/{id}/{assignedUser}")
+    public BugDto assign(@PathVariable String id, @PathVariable String assignedUser) {
+        return bugService.assignTo(id, assignedUser); //TODO handle the error and return a status
+    }
+
 }

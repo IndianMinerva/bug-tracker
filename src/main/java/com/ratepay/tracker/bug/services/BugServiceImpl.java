@@ -41,7 +41,7 @@ public class BugServiceImpl implements BugService {
         return bugRepository
                 .findById(id)
                 .map(bugMapper::mapBugEntityToBugDto)
-                .orElseThrow();
+                .orElseThrow(() -> new RuntimeException("Bug could not be found"));
     }
 
     @Override
@@ -72,7 +72,22 @@ public class BugServiceImpl implements BugService {
     }
 
     @Override
-    public List<BugDto> updateStatus(String id, BugStatus status) {
-        return null;
+    public BugDto updateStatus(String id, BugStatus status) {
+        return bugRepository.findById(id).map(bug -> {
+            bug.setStatus(status);
+            return bugRepository.save(bug);
+        }).map(bugMapper::mapBugEntityToBugDto)
+                .orElseThrow(() -> new RuntimeException("Failed to update the status of the bug"));
+    }
+
+    @Override
+    public BugDto assignTo(String id, String assignedUser) {
+        return bugRepository.findById(id)
+                .map(bug -> {
+                    bug.setStatus(BugStatus.ASSIGNED);
+                    bug.setAssignedTo(assignedUser);
+                    return bugRepository.save(bug);
+                }).map(bugMapper::mapBugEntityToBugDto)
+                .orElseThrow(() -> new RuntimeException("Failed to assign the bug"));
     }
 }
