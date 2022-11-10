@@ -2,6 +2,7 @@ package com.ratepay.tracker.bug.services.impl;
 
 import com.ratepay.tracker.bug.dto.BugCreationRequest;
 import com.ratepay.tracker.bug.dto.BugDto;
+import com.ratepay.tracker.bug.entity.BugEntity;
 import com.ratepay.tracker.bug.entity.BugStatus;
 import com.ratepay.tracker.bug.repositories.BugRepository;
 import com.ratepay.tracker.bug.services.BugService;
@@ -18,7 +19,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 
-import static com.ratepay.tracker.bug.entity.BugStatus.ASSIGNED;
+import static com.ratepay.tracker.bug.entity.BugStatus.*;
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest
@@ -103,5 +104,46 @@ public class BugServiceSpec {
                     .isEqualTo(assignee);
         });
     }
-    
+
+    @Test
+    @DisplayName("Bug - Verify searches")  //A gaint test for all the searches
+    public void givenBugEntities_search_shouldWorkAsExpected() {
+        String createdBy = "penguin@creator.com";
+        String assignedTo = "bunny@test.com";
+
+        //Given
+        bugRepository.save(new BugEntity(null, "Title-1", "Desc-2", createdBy, null, CREATED));
+        bugRepository.save(new BugEntity(null, "Title-2", "Desc-2", createdBy, assignedTo, ASSIGNED));
+        bugRepository.save(new BugEntity(null, "Title-3", "Desc-3", createdBy, assignedTo, ASSIGNED));
+        bugRepository.save(new BugEntity(null, "Title-4", "Desc-4", createdBy, assignedTo, RESOLVED));
+        bugRepository.save(new BugEntity(null, "Title-5", "Desc-5", createdBy, assignedTo, RESOLVED));
+        bugRepository.save(new BugEntity(null, "Title-6", "Desc-6", createdBy, assignedTo, CLOSED));
+        bugRepository.save(new BugEntity(null, "Title-7", "Desc-7", null, null, CLOSED));
+
+        //When
+        List<BugDto> allBugs = bugService.getAll();
+        List<BugDto> bugsByCreatedUser = bugService.getByCreatedUser(createdBy);
+        List<BugDto> bugsByAssignedTo = bugService.getByAssignedUser(assignedTo);
+        List<BugDto> resolvedBugs = bugService.getByStatus(RESOLVED);
+
+        //then
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(allBugs.size())
+                    .as("Verify the count")
+                    .isEqualTo(7);
+
+            softly.assertThat(bugsByCreatedUser.size())
+                    .as("Verify the count")
+                    .isEqualTo(6);
+
+            softly.assertThat(bugsByAssignedTo.size())
+                    .as("Verify the count")
+                    .isEqualTo(5);
+
+            softly.assertThat(resolvedBugs.size())
+                    .as("Verify the count")
+                    .isEqualTo(2);
+        });
+
+    }
 }
