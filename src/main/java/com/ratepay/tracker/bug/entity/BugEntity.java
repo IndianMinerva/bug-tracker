@@ -11,7 +11,8 @@ public class BugEntity {
     private String title;
     private String description;
     private String createdBy;
+    private String assignedTo;
     private BugStatus status;
 
-    //Omitting the details like Sprint and the respective dates but that should be VERY easy to extend this with
+    //Omitting the details like Sprint and the respective dates but it should be VERY easy to extend this with
 }

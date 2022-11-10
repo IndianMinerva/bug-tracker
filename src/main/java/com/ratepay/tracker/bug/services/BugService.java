@@ -9,7 +9,11 @@ import java.util.List;
 public interface BugService {
     void createBug(BugCreationRequest bugCreationRequest);
     List<BugDto> getAll();
-    BugDto getById(Long id);
+    BugDto getById(String id);
     List<BugDto> getByStatus(BugStatus status);
-    List<BugDto> updateStatus(Long id, BugStatus status);
+
+    List<BugDto> getByCreatedUser(String createdUser);
+
+    List<BugDto> getByAssignedUser(String createdUser);
+    List<BugDto> updateStatus(String id, BugStatus status);
 }

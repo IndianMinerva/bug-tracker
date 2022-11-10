@@ -16,5 +16,6 @@ public class BugDto {
     private String title;
     private String description;
     private String createdBy;
+    private String assignedTo;
     private BugStatus status;
 }

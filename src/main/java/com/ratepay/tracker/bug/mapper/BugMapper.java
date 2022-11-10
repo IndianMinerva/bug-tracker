@@ -12,12 +12,8 @@ public class BugMapper {
                 bugEntity.getTitle(),
                 bugEntity.getDescription(),
                 bugEntity.getCreatedBy(),
+                bugEntity.getAssignedTo(),
                 bugEntity.getStatus()
         );
     }
-
-    /*public BugEntity mapBugDtoToEntity(BugDto bugDto) {
-        BugStatus bugStatus = bugDto.getStatus() == null ? BugStatus.CREATED : bugDto.getStatus();
-        return new BugEntity(null, bugDto.getTitle(), bugDto.getDescription(), bugStatus);
-    }*/
 }

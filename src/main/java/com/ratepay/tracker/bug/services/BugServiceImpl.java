@@ -10,7 +10,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.StreamSupport;
 
 @Service
 @AllArgsConstructor
@@ -25,6 +24,7 @@ public class BugServiceImpl implements BugService {
                 null, bugCreationRequest.getTitle(),
                 bugCreationRequest.getDescription(),
                 bugCreationRequest.getCreatedBy(),
+                null,
                 BugStatus.CREATED);
 
         bugRepository.save(entity);
@@ -32,23 +32,47 @@ public class BugServiceImpl implements BugService {
 
     @Override
     public List<BugDto> getAll() {
-        return StreamSupport
-                .stream(bugRepository.findAll().spliterator(), false)
+        return bugRepository.findAll().stream()
                 .map(bugMapper::mapBugEntityToBugDto).toList();
     }
 
     @Override
-    public BugDto getById(Long id) {
-        return null;
+    public BugDto getById(String id) {
+        return bugRepository
+                .findById(id)
+                .map(bugMapper::mapBugEntityToBugDto)
+                .orElseThrow();
+    }
+
+    @Override
+    public List<BugDto> getByCreatedUser(String createdUser) {
+        return bugRepository
+                .findAllByCreatedBy(createdUser)
+                .stream()
+                .map(bugMapper::mapBugEntityToBugDto)
+                .toList();
+    }
+
+    @Override
+    public List<BugDto> getByAssignedUser(String assignedTo) {
+        return bugRepository
+                .findAllByAssignedTo(assignedTo)
+                .stream()
+                .map(bugMapper::mapBugEntityToBugDto)
+                .toList();
     }
 
     @Override
     public List<BugDto> getByStatus(BugStatus status) {
-        return null;
+        return bugRepository
+                .findAllByStatus(status)
+                .stream()
+                .map(bugMapper::mapBugEntityToBugDto)
+                .toList();
     }
 
     @Override
-    public List<BugDto> updateStatus(Long id, BugStatus status) {
+    public List<BugDto> updateStatus(String id, BugStatus status) {
         return null;
     }
 }
